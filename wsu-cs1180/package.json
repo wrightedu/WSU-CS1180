@@ -7,10 +7,10 @@
 	"author": {
 		"name": "Wright State University Computer Science"
 	},
-	"homepage": "https://github.com/wrightedu/WSU-VSCode",
+	"homepage": "https://github.com/wrightedu/",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/wrightedu/WSU-VSCode"
+		"url": "https://github.com/wrightedu/WSU-CS1180"
 	},
 	"engines": {
 		"vscode": "^1.41.0"
