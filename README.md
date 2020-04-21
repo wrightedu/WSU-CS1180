@@ -16,9 +16,13 @@ None
 
 ## Known Issues
 
-None known. If you find any, email cse-support
+Automatically generated projects don't support the nice little `Run | Debug` buttons above the main method yet, so actually running code is non trivial...
 
 ## Release Notes
+
+### 0.0.2
+
+Add support for automatically creating projects.
 
 ### 0.0.1 
 
