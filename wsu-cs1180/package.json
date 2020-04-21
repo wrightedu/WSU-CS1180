@@ -33,7 +33,7 @@
 		"commands": [
 			{
 				"command": "wsucs1180.createProject",
-				"title": "WSU CS 1180: Initialize Java Project"
+				"title": "WSU CS 1180: Create a New Java Project"
 			}
 		]
 	},
