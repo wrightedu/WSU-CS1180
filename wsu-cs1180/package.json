@@ -2,7 +2,7 @@
 	"name": "wsu-cs1180",
 	"displayName": "WSU CS 1180",
 	"description": "VSCode plugin for CS 1180 class in the Wright State CSE department",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"publisher": "WrightStateUniversity-ComputerScience",
 	"author": {
 		"name": "Wright State University Computer Science"
@@ -25,7 +25,18 @@
 		"Other",
 		"Extension Packs"
 	],
+	"activationEvents": [
+		"onCommand:wsucs1180.createProject"
+	],
 	"main": "./src/cs1180.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "wsucs1180.createProject",
+				"title": "WSU CS 1180: Initialize Java Project"
+			}
+		]
+	},
 	"scripts": {
 		"test": "node ./test/runTest.js"
 	},
@@ -45,5 +56,6 @@
 		"eamodio.gitlens",
 		"oderwat.indent-rainbow",
 		"vscjava.vscode-java-pack"
-	]
+	],
+	"dependencies": {}
 }
