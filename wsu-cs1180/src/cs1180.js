@@ -20,20 +20,29 @@ function activate(context) {
     console.log('The WSU SC 1180 extension has been activated');
 
     context.subscriptions.push(vscode.commands.registerCommand('wsucs1180.createProject', () => {
-        vscode.window.showInformationMessage('Creating a new java project in the current workspace');
-
         // Open up a window to prompt the user to enter a name for the main class
-        vscode.window.showInputBox({ 'placeHolder': 'Enter the name of the assignment' }).then((rawInput) => {
-            vscode.window.showInformationMessage("Does this run?");
-            
-            // only allow letters and numbers, and remove any numbers from the begining of the string
-            let className = rawInput.replace(/[\W_]/g, "").replace(/^\d+/, "");
+        vscode.window.showInputBox({
+            'placeHolder': 'Enter the name of the assignment',
+            "validateInput": (rawInput) => {
+                if (!rawInput.match(/^[^/]+$/)) {
+                    return "Project names can not contain a forward slash";
+                }
 
-            // convert the first letter of the class name to be uppercase
-            className = className[0].toUpperCase() + className.substr(1);
+                if (fs.existsSync(vscode.workspace.workspaceFolders[0].uri.fsPath + '/' + createpProjectDir(rawInput))) {
+                    return "A project with that name already exists";
+                }
+
+                return "";
+            }
+        }).then((rawInput) => {
+
+            // only allow letters and numbers, and remove any numbers from the begining of the string
+            let className = createClassName(rawInput);
 
             // The package name will be the same as the class name, except all lower case
-            let packageName = className.toLowerCase();
+            let packageName = createPackageName(rawInput);
+
+            let projectDir = createpProjectDir(rawInput);
 
 
             let fileContents = `
@@ -51,23 +60,38 @@ public class ${className} {
     }
 }
 `;
-            let dirPath = vscode.workspace.workspaceFolders[0].uri.fsPath + '/src/cs1180/' + packageName + "/";
+
+            // TODO Replace this with a class repository type folder that the user can set in their settings
+            let workspaceDir = vscode.workspace.workspaceFolders[0].uri.fsPath + '/';
+            let dirPath = workspaceDir + projectDir + '/src/cs1180/' + packageName + "/";
             let filePath = dirPath + className + ".java";
 
-            console.log(vscode.workspace.workspaceFolders);
             console.log(dirPath);
             console.log(filePath);
-            // Create the parent directory as necessary
-            mkdir(dirPath, (err) => {
-                if (err) vscode.window.showErrorMessage("Could not create project :(");
 
-                else fs.appendFile(filePath, fileContents, options = { "flag": "w" }, (err) => {
-                    if (err) vscode.window.showErrorMessage("Could not create project :(");
-                    else vscode.window.showInformationMessage("Project class created");
+            mkdir(workspaceDir + projectDir,
+                (err) => {
+                    if (err) {
+                        vscode.window.showErrorMessage("Could not create project directory :(");
+                    }
+
+                    else {
+                        // Create the parent directory as necessary
+                        mkdir(dirPath, (err) => {
+                            if (err) vscode.window.showErrorMessage("Could not create project :(");
+
+                            else fs.appendFile(filePath, fileContents, options = { "flag": "w" }, (err) => {
+                                if (err) vscode.window.showErrorMessage("Could not create project :(");
+                            });
+                        });
+
+                        createEclipsePackageStructure(workspaceDir + projectDir, rawInput);
+
+                        vscode.window.showInformationMessage("Project created");
+
+                        vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(workspaceDir + projectDir), true);
+                    }
                 });
-            });
-
-            createEclipsePackageStructure(vscode.workspace.workspaceFolders[0].uri.fsPath, rawInput);
         });
     }));
 }
@@ -75,6 +99,23 @@ exports.activate = activate;
 
 // this method is called when your extension is deactivated
 function deactivate() { }
+
+function createClassName(rawInput) {
+    let className = rawInput.replace(/[\W_]/g, "").replace(/^\d+/, "");
+    className = className[0].toUpperCase() + className.substr(1);
+    return className;
+}
+
+function createPackageName(rawInput) {
+    let packageName = rawInput.replace(/[\W_]/g, "").replace(/^\d+/, "");
+    packageName = packageName.toLowerCase();
+    return packageName;
+}
+
+function createpProjectDir(rawInput) {
+    let projectDir = rawInput.replace(/\s*/g, "");
+    return projectDir;
+}
 
 function createEclipsePackageStructure(dir, projectName) {
     let preferences = `
@@ -106,13 +147,11 @@ org.eclipse.jdt.core.compiler.source=11
 <projectDescription>
   <name>${projectName}</name>
   <comment/>
-  <projects>&#xD;
-    </projects>
+  <projects></projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
-      <arguments>&#xD;
-            </arguments>
+      <arguments></arguments>
     </buildCommand>
   </buildSpec>
   <natures>
@@ -120,15 +159,14 @@ org.eclipse.jdt.core.compiler.source=11
   </natures>
 </projectDescription>`;
 
-    mkdir(dir + "/.settings");
-    fs.appendFile(dir + "/.settings/org.eclipse.jdt.core.prefs", preferences, options = { "flag": "w" }, () => { });
+    mkdir(dir + "/.settings", () => {
+        fs.appendFile(dir + "/.settings/org.eclipse.jdt.core.prefs", preferences, options = { "flag": "w" }, () => { });
+    });
+
     fs.appendFile(dir + "/.classpath", classpath, options = { "flag": "w" }, () => { });
     fs.appendFile(dir + "/.project", project, options = { "flag": "w" }, () => { });
     mkdir(dir + "/bin");
-
-
 }
-
 
 module.exports = {
     activate,

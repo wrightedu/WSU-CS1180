@@ -2,12 +2,12 @@
 	"name": "wsu-cs1180",
 	"displayName": "WSU CS 1180",
 	"description": "VSCode plugin for CS 1180 class in the Wright State CSE department",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "WrightStateUniversity-ComputerScience",
 	"author": {
 		"name": "Wright State University Computer Science"
 	},
-	"homepage": "https://github.com/wrightedu/",
+	"homepage": "https://github.com/wrightedu/WSU-CS1180",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/wrightedu/WSU-CS1180"

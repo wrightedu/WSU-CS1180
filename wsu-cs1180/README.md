@@ -4,7 +4,7 @@ VSCode plugin for the cs 1180 in the Wright State CSE department
 
 ## Features
 
-For now, this is simply installs a selecton of extensions deemed useful for courses. To suggest new extensions, email cse-support.
+Contains capability to automatically create 
 
 ## Requirements
 
@@ -16,9 +16,14 @@ None
 
 ## Known Issues
 
-Automatically generated projects don't support the nice little `Run | Debug` buttons above the main method yet, so actually running code is non trivial...
+- Projects are created in the current workspace directory. As a result, students could easily create a big long spaghetti mess of project nested inside project. Maybe some sort of "solution explorer" like in net beans/eclipse?
+- The project template is hard coded into the extension code. If you want to change the template, you need to make an entirely new version, publish, and download it. Needless to say this is not ideal.
 
 ## Release Notes
+
+### 0.0.3
+
+Projects are created in their own named folders, allowing for a simple universal workspace, reducing eye-strain and bringing in better reception.
 
 ### 0.0.2
 
