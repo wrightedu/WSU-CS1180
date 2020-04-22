@@ -4,7 +4,7 @@ VSCode plugin for the cs 1180 in the Wright State CSE department
 
 ## Features
 
-Contains capability to automatically create 
+Contains capability to automatically create projects for Wright State's CS 1180 course.
 
 ## Requirements
 
